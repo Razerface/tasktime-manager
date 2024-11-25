@@ -81,6 +81,28 @@ const Index = () => {
     setPinAttempt("");
   };
 
+  const handlePinChange = (newPin: string) => {
+    setAdminPin(newPin);
+    toast({
+      title: "PIN Updated",
+      description: "The admin PIN has been changed successfully",
+    });
+  };
+
+  const handlePaymentSuccess = (userId: string) => {
+    const updatedUsers = users.map(user => 
+      user.id === userId 
+        ? { ...user, isPremium: true }
+        : user
+    );
+    setUsers(updatedUsers);
+    localStorage.setItem('timemanager-users', JSON.stringify(updatedUsers));
+    toast({
+      title: "Premium Activated",
+      description: "Premium features have been unlocked!",
+    });
+  };
+
   return (
     <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
       <div className="min-h-screen bg-gradient-to-b from-background to-secondary/5 p-6">
