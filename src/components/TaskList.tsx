@@ -171,14 +171,15 @@ const TaskList = ({ currentUser, onTaskComplete }: TaskListProps) => {
 
   const initializeUserTasks = (userId: string) => {
     if (!userTasks[userId]) {
+      const initialTasks = {
+        5: generateTasks(5),
+        10: generateTasks(10),
+        15: generateTasks(15),
+        30: generateTasks(30),
+      };
       setUserTasks(prev => ({
         ...prev,
-        [userId]: {
-          5: generateTasks(5),
-          10: generateTasks(10),
-          15: generateTasks(15),
-          30: generateTasks(30),
-        }
+        [userId]: initialTasks
       }));
     }
   };

@@ -8,6 +8,7 @@ import AdminPanel from "@/components/AdminPanel";
 import TaskList from "@/components/TaskList";
 import UserDashboard from "@/components/UserDashboard";
 import CustomTaskPanel from "@/components/CustomTaskPanel";
+import { PaymentDialog } from "@/components/PaymentDialog";
 
 interface User {
   id: string;
@@ -66,29 +67,51 @@ const Index = () => {
     });
   };
 
+  const handlePaymentSuccess = (userId: string) => {
+    const updatedUsers = users.map(user => 
+      user.id === userId 
+        ? { ...user, isPremium: true }
+        : user
+    );
+    setUsers(updatedUsers);
+    localStorage.setItem('timemanager-users', JSON.stringify(updatedUsers));
+    toast({
+      title: "Premium Activated",
+      description: "Premium features have been unlocked!",
+    });
+  };
+
   return (
     <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
       <div className="min-h-screen bg-gradient-to-b from-background to-secondary/5 p-6">
         <div className="max-w-7xl mx-auto space-y-8">
           <header className="flex justify-between items-center bg-gradient-to-r from-primary to-secondary p-4 rounded-lg shadow-lg">
             <h1 className="text-4xl font-bold text-white">TimeNest</h1>
-            {!isAdmin && (
-              <div className="flex gap-2">
-                <Input
-                  type="password"
-                  placeholder="Enter Admin PIN"
-                  value={pinAttempt}
-                  onChange={(e) => setPinAttempt(e.target.value)}
-                  className="w-32 bg-white/20 text-white placeholder:text-white/70"
+            <div className="flex items-center gap-4">
+              {currentUser && !currentUser.isPremium && (
+                <PaymentDialog 
+                  userId={currentUser.id}
+                  onPaymentSuccess={handlePaymentSuccess}
                 />
-                <Button 
-                  onClick={handlePinSubmit}
-                  className="bg-white text-primary hover:bg-white/90"
-                >
-                  Login
-                </Button>
-              </div>
-            )}
+              )}
+              {!isAdmin && (
+                <div className="flex gap-2">
+                  <Input
+                    type="password"
+                    placeholder="Enter Admin PIN"
+                    value={pinAttempt}
+                    onChange={(e) => setPinAttempt(e.target.value)}
+                    className="w-32 bg-white/20 text-white placeholder:text-white/70"
+                  />
+                  <Button 
+                    onClick={handlePinSubmit}
+                    className="bg-white text-primary hover:bg-white/90"
+                  >
+                    Login
+                  </Button>
+                </div>
+              )}
+            </div>
           </header>
 
           {isAdmin ? (
@@ -116,6 +139,7 @@ const Index = () => {
                           : user
                       );
                       setUsers(updatedUsers);
+                      localStorage.setItem('timemanager-users', JSON.stringify(updatedUsers));
                       toast({
                         title: "Task Completed!",
                         description: `You earned ${time} minutes!`,
