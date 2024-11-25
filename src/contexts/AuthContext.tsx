@@ -16,7 +16,7 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
 const PREDEFINED_USERS = {
-  'admin@admin.com': { password: 'admin', isPremium: true },
+  'admin@admin.com': { password: 'admin18769', isPremium: true },
   'user1@user.com': { password: 'user', isPremium: false }
 }
 

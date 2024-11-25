@@ -7,7 +7,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useToast } from "@/components/ui/use-toast";
 
 interface PaymentDialogProps {
@@ -19,19 +19,9 @@ export function PaymentDialog({ userId, onPaymentSuccess }: PaymentDialogProps) 
   const [isOpen, setIsOpen] = useState(false);
   const { toast } = useToast();
 
-  useEffect(() => {
-    // Load Stripe script
-    const script = document.createElement('script');
-    script.src = 'https://js.stripe.com/v3/buy-button.js';
-    script.async = true;
-    document.body.appendChild(script);
-
-    return () => {
-      document.body.removeChild(script);
-    };
-  }, []);
-
-  const handleSuccess = () => {
+  const handlePayment = () => {
+    window.open('https://buy.stripe.com/test_6oE0208nPbn58AocMM', '_blank');
+    // Simulate success for demo purposes
     onPaymentSuccess(userId);
     setIsOpen(false);
     toast({
@@ -63,11 +53,12 @@ export function PaymentDialog({ userId, onPaymentSuccess }: PaymentDialogProps) 
           </DialogDescription>
         </DialogHeader>
         <div className="grid gap-4 py-4">
-          <stripe-buy-button
-            buy-button-id="buy_btn_1QOwQZKl1HhOH6dTGrvffCLX"
-            publishable-key="pk_test_lnic36gxPInNLXjUXX3GdGFs00XQhQetMe"
-            onSuccess={handleSuccess}
-          />
+          <Button 
+            onClick={handlePayment}
+            className="bg-gradient-to-r from-primary to-secondary hover:opacity-90"
+          >
+            Upgrade Now
+          </Button>
         </div>
       </DialogContent>
     </Dialog>
