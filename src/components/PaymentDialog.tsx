@@ -11,7 +11,6 @@ import { useState } from "react";
 import { useToast } from "@/components/ui/use-toast";
 import { loadStripe } from "@stripe/stripe-js";
 
-// Use Vite's environment variable syntax
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY || '');
 
 interface PaymentDialogProps {
@@ -39,7 +38,7 @@ export function PaymentDialog({ userId, onPaymentSuccess }: PaymentDialogProps) 
       setIsOpen(false);
       toast({
         title: "Payment Successful",
-        description: "You can now add custom tasks to your lists!",
+        description: "You can now add unlimited users and custom tasks!",
       });
     } catch (error) {
       toast({
@@ -64,8 +63,14 @@ export function PaymentDialog({ userId, onPaymentSuccess }: PaymentDialogProps) 
           <DialogTitle className="text-2xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
             Upgrade to Premium
           </DialogTitle>
-          <DialogDescription>
-            Get access to unlimited custom tasks and more features!
+          <DialogDescription className="space-y-2">
+            <p>Get access to premium features:</p>
+            <ul className="list-disc pl-5 space-y-1">
+              <li>Create unlimited custom tasks</li>
+              <li>Add unlimited users to your account</li>
+              <li>Free accounts are limited to 1 user</li>
+              <li>Premium features apply to all users in your account</li>
+            </ul>
           </DialogDescription>
         </DialogHeader>
         <div className="grid gap-4 py-4">

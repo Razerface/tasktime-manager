@@ -5,7 +5,6 @@ import { Card } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/components/ui/use-toast";
 import { ArrowLeft, Trash2 } from "lucide-react";
-import { PaymentDialog } from "./PaymentDialog";
 import { ThemeToggle } from "./ThemeToggle";
 
 interface User {
@@ -30,6 +29,18 @@ const AdminPanel = ({ users, setUsers, onLogout, onPinChange }: AdminPanelProps)
 
   const addUser = () => {
     if (newUserName.trim()) {
+      // Check if any existing user is premium
+      const hasPremiumUser = users.some(user => user.isPremium);
+      
+      if (!hasPremiumUser && users.length >= 1) {
+        toast({
+          title: "Premium Required",
+          description: "Upgrade to Premium to add more users. Free accounts are limited to 1 user.",
+          variant: "destructive",
+        });
+        return;
+      }
+
       const newUser: User = {
         id: Date.now().toString(),
         name: newUserName,
@@ -165,12 +176,6 @@ const AdminPanel = ({ users, setUsers, onLogout, onPinChange }: AdminPanelProps)
                     ))}
                   </div>
                   <div className="flex items-center gap-2">
-                    {!user.isPremium && (
-                      <PaymentDialog 
-                        userId={user.id}
-                        onPaymentSuccess={handlePaymentSuccess}
-                      />
-                    )}
                     <Button
                       variant="destructive"
                       onClick={() => resetTime(user.id)}
