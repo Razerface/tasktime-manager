@@ -15,6 +15,11 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
+const PREDEFINED_USERS = {
+  'admin@admin.com': { password: 'admin', isPremium: true },
+  'user1@user.com': { password: 'user', isPremium: false }
+}
+
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null)
   const [loading, setLoading] = useState(true)
@@ -38,6 +43,26 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setIsAdmin(true)
       return
     }
+
+    // Check predefined users first
+    if (PREDEFINED_USERS[email]) {
+      if (PREDEFINED_USERS[email].password === password) {
+        setUser({ 
+          email, 
+          id: email,
+          // Add other required User properties
+          aud: 'authenticated',
+          role: 'authenticated',
+          app_metadata: {},
+          user_metadata: { isPremium: PREDEFINED_USERS[email].isPremium },
+          created_at: new Date().toISOString()
+        } as User)
+        return
+      }
+      throw new Error('Invalid credentials')
+    }
+
+    // If not a predefined user, try Supabase auth
     const { error } = await supabase.auth.signInWithPassword({ email, password })
     if (error) throw error
   }

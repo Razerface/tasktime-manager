@@ -7,11 +7,8 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useToast } from "@/components/ui/use-toast";
-import { loadStripe } from "@stripe/stripe-js";
-
-const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY || '');
 
 interface PaymentDialogProps {
   userId: string;
@@ -20,35 +17,27 @@ interface PaymentDialogProps {
 
 export function PaymentDialog({ userId, onPaymentSuccess }: PaymentDialogProps) {
   const [isOpen, setIsOpen] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
 
-  const handlePayment = async () => {
-    setIsLoading(true);
-    
-    try {
-      const stripe = await stripePromise;
-      if (!stripe) throw new Error('Stripe failed to load');
+  useEffect(() => {
+    // Load Stripe script
+    const script = document.createElement('script');
+    script.src = 'https://js.stripe.com/v3/buy-button.js';
+    script.async = true;
+    document.body.appendChild(script);
 
-      // This would typically call your backend to create a Stripe session
-      // For now, we'll simulate a successful payment
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      onPaymentSuccess(userId);
-      setIsOpen(false);
-      toast({
-        title: "Payment Successful",
-        description: "You can now add unlimited users and custom tasks!",
-      });
-    } catch (error) {
-      toast({
-        title: "Payment Failed",
-        description: "Please try again later.",
-        variant: "destructive",
-      });
-    } finally {
-      setIsLoading(false);
-    }
+    return () => {
+      document.body.removeChild(script);
+    };
+  }, []);
+
+  const handleSuccess = () => {
+    onPaymentSuccess(userId);
+    setIsOpen(false);
+    toast({
+      title: "Payment Successful",
+      description: "You can now add unlimited users and custom tasks!",
+    });
   };
 
   return (
@@ -74,16 +63,11 @@ export function PaymentDialog({ userId, onPaymentSuccess }: PaymentDialogProps) 
           </DialogDescription>
         </DialogHeader>
         <div className="grid gap-4 py-4">
-          <div className="grid grid-cols-4 items-center gap-4">
-            <p className="text-lg font-semibold">Price: $9.99/month</p>
-          </div>
-          <Button 
-            onClick={handlePayment} 
-            disabled={isLoading}
-            className="bg-gradient-to-r from-primary to-secondary hover:opacity-90"
-          >
-            {isLoading ? "Processing..." : "Process Payment"}
-          </Button>
+          <stripe-buy-button
+            buy-button-id="buy_btn_1QOwQZKl1HhOH6dTGrvffCLX"
+            publishable-key="pk_test_lnic36gxPInNLXjUXX3GdGFs00XQhQetMe"
+            onSuccess={handleSuccess}
+          />
         </div>
       </DialogContent>
     </Dialog>
