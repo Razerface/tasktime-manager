@@ -39,8 +39,7 @@ const Login = () => {
   const onSubmit = async (values: z.infer<typeof formSchema>, isSignUp: boolean) => {
     try {
       if (values.email === "Admin" && values.password === "Admin187") {
-        // Handle admin login
-        navigate("/");
+        navigate("/dashboard");
         toast({
           title: "Welcome Admin",
           description: "You have successfully logged in as admin",
@@ -56,7 +55,7 @@ const Login = () => {
         });
       } else {
         await signIn(values.email, values.password);
-        navigate("/");
+        navigate("/dashboard");
         toast({
           title: "Welcome back",
           description: "You have successfully logged in",
