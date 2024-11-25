@@ -11,7 +11,8 @@ import { useState } from "react";
 import { useToast } from "@/components/ui/use-toast";
 import { loadStripe } from "@stripe/stripe-js";
 
-const stripePromise = loadStripe(process.env.STRIPE_PUBLIC_KEY || '');
+// Use Vite's environment variable syntax
+const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY || '');
 
 interface PaymentDialogProps {
   userId: string;
