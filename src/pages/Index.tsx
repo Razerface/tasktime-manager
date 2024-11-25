@@ -88,28 +88,28 @@ const Index = () => {
           <header className="flex justify-between items-center bg-gradient-to-r from-primary to-secondary p-4 rounded-lg shadow-lg">
             <h1 className="text-4xl font-bold text-white">TimeNest</h1>
             <div className="flex items-center gap-4">
-              {currentUser && !currentUser.isPremium && (
-                <PaymentDialog 
-                  userId={currentUser.id}
-                  onPaymentSuccess={handlePaymentSuccess}
-                />
-              )}
               {!isAdmin && (
-                <div className="flex gap-2">
-                  <Input
-                    type="password"
-                    placeholder="Enter Admin PIN"
-                    value={pinAttempt}
-                    onChange={(e) => setPinAttempt(e.target.value)}
-                    className="w-32 bg-white/20 text-white placeholder:text-white/70"
+                <>
+                  <PaymentDialog 
+                    userId={currentUser?.id || ''}
+                    onPaymentSuccess={handlePaymentSuccess}
                   />
-                  <Button 
-                    onClick={handlePinSubmit}
-                    className="bg-white text-primary hover:bg-white/90"
-                  >
-                    Login
-                  </Button>
-                </div>
+                  <div className="flex gap-2">
+                    <Input
+                      type="password"
+                      placeholder="Enter Admin PIN"
+                      value={pinAttempt}
+                      onChange={(e) => setPinAttempt(e.target.value)}
+                      className="w-32 bg-white/20 text-white placeholder:text-white/70"
+                    />
+                    <Button 
+                      onClick={handlePinSubmit}
+                      className="bg-white text-primary hover:bg-white/90"
+                    >
+                      Login
+                    </Button>
+                  </div>
+                </>
               )}
             </div>
           </header>
