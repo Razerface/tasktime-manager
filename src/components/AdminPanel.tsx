@@ -4,6 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/components/ui/use-toast";
+import { ArrowLeft } from "lucide-react";
 
 interface User {
   id: string;
@@ -69,7 +70,17 @@ const AdminPanel = ({ users, setUsers, onLogout }: AdminPanelProps) => {
   return (
     <div className="space-y-6">
       <Card className="p-6">
-        <h2 className="text-2xl font-bold mb-4">Admin Panel</h2>
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-2xl font-bold">Admin Panel</h2>
+          <Button 
+            variant="outline" 
+            onClick={onLogout}
+            className="flex items-center gap-2"
+          >
+            <ArrowLeft className="h-4 w-4" />
+            Back to Dashboard
+          </Button>
+        </div>
         <div className="flex gap-2 mb-6">
           <Input
             placeholder="New User Name"
@@ -77,9 +88,6 @@ const AdminPanel = ({ users, setUsers, onLogout }: AdminPanelProps) => {
             onChange={(e) => setNewUserName(e.target.value)}
           />
           <Button onClick={addUser}>Add User</Button>
-          <Button variant="destructive" onClick={onLogout}>
-            Logout
-          </Button>
         </div>
 
         <div className="space-y-4">

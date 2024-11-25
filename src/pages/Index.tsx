@@ -18,11 +18,18 @@ interface User {
 }
 
 const Index = () => {
-  const [users, setUsers] = useState<User[]>([]);
+  const [users, setUsers] = useState<User[]>(() => {
+    const savedUsers = localStorage.getItem('timemanager-users');
+    return savedUsers ? JSON.parse(savedUsers) : [];
+  });
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [isAdmin, setIsAdmin] = useState(false);
   const [pinAttempt, setPinAttempt] = useState("");
   const { toast } = useToast();
+
+  useEffect(() => {
+    localStorage.setItem('timemanager-users', JSON.stringify(users));
+  }, [users]);
 
   const handlePinSubmit = () => {
     if (pinAttempt === ADMIN_PIN) {
