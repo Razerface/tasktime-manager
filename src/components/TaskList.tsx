@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Card } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import TaskCategory from "./TaskCategory";
 
 interface User {
   id: string;
@@ -209,39 +209,20 @@ const TaskList = ({ currentUser, onTaskComplete }: TaskListProps) => {
   }
 
   return (
-    <Card className="p-6">
-      <h2 className="text-2xl font-bold mb-4">Tasks for {currentUser.name}</h2>
-      <div className="space-y-6">
+    <Card className="p-6 space-y-4">
+      <h2 className="text-2xl font-bold mb-4 bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+        Tasks for {currentUser.name}
+      </h2>
+      <div className="space-y-4">
         {[5, 10, 15, 30]
           .filter((category) => currentUser.allowedCategories.includes(category))
           .map((category) => (
-            <div key={category}>
-              <h3 className="text-xl font-semibold mb-2">
-                {category} Minute Tasks
-              </h3>
-              <div className="space-y-2">
-                {userTasks[currentUser.id][category].map((task) => (
-                  <div
-                    key={task.id}
-                    className={`flex items-center justify-between p-2 rounded-lg ${
-                      task.completed
-                        ? "bg-gray-100 text-gray-500 line-through"
-                        : "bg-secondary/5"
-                    }`}
-                  >
-                    <span>{task.description}</span>
-                    {!task.completed && (
-                      <Button
-                        onClick={() => handleTaskComplete(category, task.id)}
-                        className="hover:animate-task-complete"
-                      >
-                        Complete
-                      </Button>
-                    )}
-                  </div>
-                ))}
-              </div>
-            </div>
+            <TaskCategory
+              key={category}
+              category={category}
+              tasks={userTasks[currentUser.id][category]}
+              onComplete={handleTaskComplete}
+            />
           ))}
       </div>
     </Card>
