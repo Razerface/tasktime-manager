@@ -8,8 +8,6 @@ import AdminPanel from "@/components/AdminPanel";
 import TaskList from "@/components/TaskList";
 import UserDashboard from "@/components/UserDashboard";
 
-const ADMIN_PIN = "1234"; // In a real app, this should be stored securely
-
 interface User {
   id: string;
   name: string;
@@ -27,12 +25,21 @@ const Index = () => {
   const [pinAttempt, setPinAttempt] = useState("");
   const { toast } = useToast();
 
+  const [adminPin, setAdminPin] = useState(() => {
+    const savedPin = localStorage.getItem('timemanager-pin');
+    return savedPin || "1234";
+  });
+
   useEffect(() => {
     localStorage.setItem('timemanager-users', JSON.stringify(users));
   }, [users]);
 
+  useEffect(() => {
+    localStorage.setItem('timemanager-pin', adminPin);
+  }, [adminPin]);
+
   const handlePinSubmit = () => {
-    if (pinAttempt === ADMIN_PIN) {
+    if (pinAttempt === adminPin) {
       setIsAdmin(true);
       toast({
         title: "Admin Access Granted",
@@ -46,6 +53,14 @@ const Index = () => {
       });
     }
     setPinAttempt("");
+  };
+
+  const handlePinChange = (newPin: string) => {
+    setAdminPin(newPin);
+    toast({
+      title: "PIN Updated",
+      description: "The admin PIN has been changed successfully",
+    });
   };
 
   return (
@@ -72,6 +87,7 @@ const Index = () => {
             users={users}
             setUsers={setUsers}
             onLogout={() => setIsAdmin(false)}
+            onPinChange={handlePinChange}
           />
         ) : (
           <div className="grid gap-6 md:grid-cols-2">

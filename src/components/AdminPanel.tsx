@@ -17,10 +17,12 @@ interface AdminPanelProps {
   users: User[];
   setUsers: (users: User[]) => void;
   onLogout: () => void;
+  onPinChange: (newPin: string) => void;
 }
 
-const AdminPanel = ({ users, setUsers, onLogout }: AdminPanelProps) => {
+const AdminPanel = ({ users, setUsers, onLogout, onPinChange }: AdminPanelProps) => {
   const [newUserName, setNewUserName] = useState("");
+  const [newPin, setNewPin] = useState("");
   const { toast } = useToast();
 
   const addUser = () => {
@@ -37,6 +39,13 @@ const AdminPanel = ({ users, setUsers, onLogout }: AdminPanelProps) => {
         title: "User Added",
         description: `${newUserName} has been added successfully`,
       });
+    }
+  };
+
+  const handlePinChange = () => {
+    if (newPin.trim()) {
+      onPinChange(newPin);
+      setNewPin("");
     }
   };
 
@@ -81,6 +90,7 @@ const AdminPanel = ({ users, setUsers, onLogout }: AdminPanelProps) => {
             Back to Dashboard
           </Button>
         </div>
+
         <div className="flex gap-2 mb-6">
           <Input
             placeholder="New User Name"
@@ -88,6 +98,16 @@ const AdminPanel = ({ users, setUsers, onLogout }: AdminPanelProps) => {
             onChange={(e) => setNewUserName(e.target.value)}
           />
           <Button onClick={addUser}>Add User</Button>
+        </div>
+
+        <div className="flex gap-2 mb-6">
+          <Input
+            type="password"
+            placeholder="New Admin PIN"
+            value={newPin}
+            onChange={(e) => setNewPin(e.target.value)}
+          />
+          <Button onClick={handlePinChange}>Change PIN</Button>
         </div>
 
         <div className="space-y-4">

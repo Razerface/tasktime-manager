@@ -14,6 +14,12 @@ interface TaskListProps {
   onTaskComplete: (time: number) => void;
 }
 
+interface Task {
+  id: string;
+  description: string;
+  completed: boolean;
+}
+
 const generateTasks = (category: number) => {
   const tasks = {
     5: [
@@ -58,24 +64,51 @@ const generateTasks = (category: number) => {
 };
 
 const TaskList = ({ currentUser, onTaskComplete }: TaskListProps) => {
-  const [tasks, setTasks] = useState<{ [key: number]: any[] }>({
-    5: generateTasks(5),
-    10: generateTasks(10),
-    15: generateTasks(15),
-    30: generateTasks(30),
+  const [userTasks, setUserTasks] = useState<{ [key: string]: { [key: number]: Task[] } }>(() => {
+    const savedTasks = localStorage.getItem('timemanager-tasks');
+    return savedTasks ? JSON.parse(savedTasks) : {};
   });
 
+  useEffect(() => {
+    localStorage.setItem('timemanager-tasks', JSON.stringify(userTasks));
+  }, [userTasks]);
+
+  const initializeUserTasks = (userId: string) => {
+    if (!userTasks[userId]) {
+      setUserTasks(prev => ({
+        ...prev,
+        [userId]: {
+          5: generateTasks(5),
+          10: generateTasks(10),
+          15: generateTasks(15),
+          30: generateTasks(30),
+        }
+      }));
+    }
+  };
+
+  useEffect(() => {
+    if (currentUser) {
+      initializeUserTasks(currentUser.id);
+    }
+  }, [currentUser]);
+
   const handleTaskComplete = (category: number, taskId: string) => {
-    setTasks((prev) => ({
+    if (!currentUser) return;
+    
+    setUserTasks(prev => ({
       ...prev,
-      [category]: prev[category].map((task) =>
-        task.id === taskId ? { ...task, completed: true } : task
-      ),
+      [currentUser.id]: {
+        ...prev[currentUser.id],
+        [category]: prev[currentUser.id][category].map((task) =>
+          task.id === taskId ? { ...task, completed: true } : task
+        ),
+      },
     }));
     onTaskComplete(category);
   };
 
-  if (!currentUser) {
+  if (!currentUser || !userTasks[currentUser.id]) {
     return null;
   }
 
@@ -89,7 +122,7 @@ const TaskList = ({ currentUser, onTaskComplete }: TaskListProps) => {
               {category} Minute Tasks
             </h3>
             <div className="space-y-2">
-              {tasks[category].map((task) => (
+              {userTasks[currentUser.id][category].map((task) => (
                 <div
                   key={task.id}
                   className={`flex items-center justify-between p-2 rounded-lg ${
