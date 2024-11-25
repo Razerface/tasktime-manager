@@ -9,9 +9,11 @@ interface User {
 
 interface UserDashboardProps {
   users: User[];
+  onSelectUser: (user: User) => void;
+  selectedUser: User | null;
 }
 
-const UserDashboard = ({ users }: UserDashboardProps) => {
+const UserDashboard = ({ users, onSelectUser, selectedUser }: UserDashboardProps) => {
   return (
     <Card className="p-6">
       <h2 className="text-2xl font-bold mb-4">User Dashboard</h2>
@@ -19,7 +21,12 @@ const UserDashboard = ({ users }: UserDashboardProps) => {
         {users.map((user) => (
           <div
             key={user.id}
-            className="p-4 bg-secondary/5 rounded-lg flex justify-between items-center"
+            className={`p-4 rounded-lg flex justify-between items-center cursor-pointer transition-colors ${
+              selectedUser?.id === user.id
+                ? "bg-primary/10 border-2 border-primary"
+                : "bg-secondary/5 hover:bg-secondary/10"
+            }`}
+            onClick={() => onSelectUser(user)}
           >
             <div>
               <h3 className="text-lg font-semibold">{user.name}</h3>

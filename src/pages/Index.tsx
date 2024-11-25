@@ -75,7 +75,11 @@ const Index = () => {
           />
         ) : (
           <div className="grid gap-6 md:grid-cols-2">
-            <UserDashboard users={users} />
+            <UserDashboard 
+              users={users} 
+              onSelectUser={setCurrentUser}
+              selectedUser={currentUser}
+            />
             <TaskList
               currentUser={currentUser}
               onTaskComplete={(time) => {

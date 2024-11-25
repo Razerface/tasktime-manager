@@ -14,7 +14,6 @@ interface TaskListProps {
   onTaskComplete: (time: number) => void;
 }
 
-// AI-generated tasks for each category
 const generateTasks = (category: number) => {
   const tasks = {
     5: [
@@ -76,9 +75,13 @@ const TaskList = ({ currentUser, onTaskComplete }: TaskListProps) => {
     onTaskComplete(category);
   };
 
+  if (!currentUser) {
+    return null;
+  }
+
   return (
     <Card className="p-6">
-      <h2 className="text-2xl font-bold mb-4">Available Tasks</h2>
+      <h2 className="text-2xl font-bold mb-4">Tasks for {currentUser.name}</h2>
       <div className="space-y-6">
         {[5, 10, 15, 30].map((category) => (
           <div key={category}>
@@ -86,23 +89,26 @@ const TaskList = ({ currentUser, onTaskComplete }: TaskListProps) => {
               {category} Minute Tasks
             </h3>
             <div className="space-y-2">
-              {tasks[category]
-                .filter((task) => !task.completed)
-                .slice(0, 5)
-                .map((task) => (
-                  <div
-                    key={task.id}
-                    className="flex items-center justify-between p-2 bg-secondary/5 rounded-lg"
-                  >
-                    <span>{task.description}</span>
+              {tasks[category].map((task) => (
+                <div
+                  key={task.id}
+                  className={`flex items-center justify-between p-2 rounded-lg ${
+                    task.completed
+                      ? "bg-gray-100 text-gray-500 line-through"
+                      : "bg-secondary/5"
+                  }`}
+                >
+                  <span>{task.description}</span>
+                  {!task.completed && (
                     <Button
                       onClick={() => handleTaskComplete(category, task.id)}
                       className="hover:animate-task-complete"
                     >
                       Complete
                     </Button>
-                  </div>
-                ))}
+                  )}
+                </div>
+              ))}
             </div>
           </div>
         ))}
