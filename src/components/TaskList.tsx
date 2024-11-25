@@ -23,36 +23,132 @@ interface Task {
 const generateTasks = (category: number) => {
   const tasks = {
     5: [
+      // Existing tasks
       "Clean your desk",
       "Make your bed",
       "Put away toys",
       "Water the plants",
       "Sort your books",
-      // ... more tasks
+      // Spring tasks
+      "Plant flower seeds",
+      "Clean window screens",
+      "Put away winter clothes",
+      "Dust ceiling fans",
+      "Organize spring supplies",
+      // Summer tasks
+      "Water garden",
+      "Clean pool toys",
+      "Organize summer gear",
+      "Clean beach supplies",
+      "Sort summer clothes",
+      // Fall tasks
+      "Rake leaves",
+      "Sort school supplies",
+      "Clean rain boots",
+      "Organize fall decorations",
+      "Put away summer items",
+      // Winter tasks
+      "Organize winter clothes",
+      "Sort holiday decorations",
+      "Clean snow boots",
+      "Organize winter gear",
+      "Put away fall items",
     ],
     10: [
+      // Existing tasks
       "Complete a homework assignment",
       "Practice an instrument",
       "Help with laundry",
       "Organize your closet",
       "Read a chapter",
-      // ... more tasks
+      // Spring tasks
+      "Plant vegetable garden",
+      "Spring cleaning tasks",
+      "Organize garage",
+      "Clean patio furniture",
+      "Wash windows",
+      // Summer tasks
+      "Set up pool area",
+      "Clean outdoor toys",
+      "Organize summer sports gear",
+      "Clean outdoor furniture",
+      "Maintain garden",
+      // Fall tasks
+      "Clean gutters",
+      "Organize school materials",
+      "Clean outdoor equipment",
+      "Store summer furniture",
+      "Sort fall clothes",
+      // Winter tasks
+      "Shovel snow",
+      "Clean winter equipment",
+      "Organize holiday items",
+      "Sort winter gear",
+      "Indoor organization",
     ],
     15: [
+      // Existing tasks
       "Clean your room thoroughly",
       "Help prepare dinner",
       "Practice sports skills",
       "Complete a craft project",
       "Study for a test",
-      // ... more tasks
+      // Spring tasks
+      "Deep clean bedroom",
+      "Garden maintenance",
+      "Clean outdoor spaces",
+      "Organize storage areas",
+      "Spring home projects",
+      // Summer tasks
+      "Clean pool area",
+      "Organize summer activities",
+      "Help with yard work",
+      "Clean outdoor storage",
+      "Summer home projects",
+      // Fall tasks
+      "Fall yard cleanup",
+      "Organize school workspace",
+      "Clean garage",
+      "Store outdoor items",
+      "Fall home projects",
+      // Winter tasks
+      "Winter preparation tasks",
+      "Indoor cleaning projects",
+      "Organize holiday storage",
+      "Clean winter equipment",
+      "Winter home projects",
     ],
     30: [
+      // Existing tasks
       "Deep clean the bathroom",
       "Help with yard work",
       "Complete a major assignment",
       "Help organize garage",
       "Paint or draw a picture",
-      // ... more tasks
+      // Spring tasks
+      "Major spring cleaning",
+      "Garden planning and setup",
+      "Clean and organize basement",
+      "Paint room",
+      "Spring renovation help",
+      // Summer tasks
+      "Major outdoor projects",
+      "Pool maintenance",
+      "Summer home improvement",
+      "Clean and organize attic",
+      "Summer renovation help",
+      // Fall tasks
+      "Major fall cleanup",
+      "Winterize outdoor spaces",
+      "Fall home improvement",
+      "Clean and organize garage",
+      "Fall renovation help",
+      // Winter tasks
+      "Major indoor organization",
+      "Winter home projects",
+      "Holiday decoration setup",
+      "Deep clean entire room",
+      "Winter renovation help",
     ],
   }[category] || [];
 
@@ -116,35 +212,37 @@ const TaskList = ({ currentUser, onTaskComplete }: TaskListProps) => {
     <Card className="p-6">
       <h2 className="text-2xl font-bold mb-4">Tasks for {currentUser.name}</h2>
       <div className="space-y-6">
-        {[5, 10, 15, 30].map((category) => (
-          <div key={category}>
-            <h3 className="text-xl font-semibold mb-2">
-              {category} Minute Tasks
-            </h3>
-            <div className="space-y-2">
-              {userTasks[currentUser.id][category].map((task) => (
-                <div
-                  key={task.id}
-                  className={`flex items-center justify-between p-2 rounded-lg ${
-                    task.completed
-                      ? "bg-gray-100 text-gray-500 line-through"
-                      : "bg-secondary/5"
-                  }`}
-                >
-                  <span>{task.description}</span>
-                  {!task.completed && (
-                    <Button
-                      onClick={() => handleTaskComplete(category, task.id)}
-                      className="hover:animate-task-complete"
-                    >
-                      Complete
-                    </Button>
-                  )}
-                </div>
-              ))}
+        {[5, 10, 15, 30]
+          .filter((category) => currentUser.allowedCategories.includes(category))
+          .map((category) => (
+            <div key={category}>
+              <h3 className="text-xl font-semibold mb-2">
+                {category} Minute Tasks
+              </h3>
+              <div className="space-y-2">
+                {userTasks[currentUser.id][category].map((task) => (
+                  <div
+                    key={task.id}
+                    className={`flex items-center justify-between p-2 rounded-lg ${
+                      task.completed
+                        ? "bg-gray-100 text-gray-500 line-through"
+                        : "bg-secondary/5"
+                    }`}
+                  >
+                    <span>{task.description}</span>
+                    {!task.completed && (
+                      <Button
+                        onClick={() => handleTaskComplete(category, task.id)}
+                        className="hover:animate-task-complete"
+                      >
+                        Complete
+                      </Button>
+                    )}
+                  </div>
+                ))}
+              </div>
             </div>
-          </div>
-        ))}
+          ))}
       </div>
     </Card>
   );
